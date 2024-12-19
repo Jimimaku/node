@@ -123,7 +123,7 @@ require('nodejs-addon-example');
 ```
 
 ```console
-$ node --experimental-permission --allow-fs-read=* index.js
+$ node --permission --allow-fs-read=* index.js
 node:internal/modules/cjs/loader:1319
   return process.dlopen(module, path.toNamespacedPath(filename));
                  ^
@@ -165,7 +165,7 @@ childProcess.spawn('node', ['-e', 'require("fs").writeFileSync("/new-file", "exa
 ```
 
 ```console
-$ node --experimental-permission --allow-fs-read=* index.js
+$ node --permission --allow-fs-read=* index.js
 node:internal/child_process:388
   const err = this._handle.spawn(options);
                            ^
@@ -189,12 +189,15 @@ Error: Access to this API has been restricted
 <!-- YAML
 added: v20.0.0
 changes:
+  - version: REPLACEME
+    pr-url: https://github.com/nodejs/node/pull/56201
+    description: Permission Model and --allow-fs flags are stable.
   - version: v20.7.0
     pr-url: https://github.com/nodejs/node/pull/49047
     description: Paths delimited by comma (`,`) are no longer allowed.
 -->
 
-> Stability: 1.1 - Active development
+> Stability: 2 - Stable.
 
 This flag configures file system read permissions using
 the [Permission Model][].
@@ -210,7 +213,7 @@ Examples can be found in the [File System Permissions][] documentation.
 The initializer module also needs to be allowed. Consider the following example:
 
 ```console
-$ node --experimental-permission index.js
+$ node --permission index.js
 
 Error: Access to this API has been restricted
     at node:internal/main/run_main_module:23:47 {
@@ -223,7 +226,7 @@ Error: Access to this API has been restricted
 The process needs to have access to the `index.js` module:
 
 ```bash
-node --experimental-permission --allow-fs-read=/path/to/index.js index.js
+node --permission --allow-fs-read=/path/to/index.js index.js
 ```
 
 ### `--allow-fs-write`
@@ -231,12 +234,15 @@ node --experimental-permission --allow-fs-read=/path/to/index.js index.js
 <!-- YAML
 added: v20.0.0
 changes:
+  - version: REPLACEME
+    pr-url: https://github.com/nodejs/node/pull/56201
+    description: Permission Model and --allow-fs flags are stable.
   - version: v20.7.0
     pr-url: https://github.com/nodejs/node/pull/49047
     description: Paths delimited by comma (`,`) are no longer allowed.
 -->
 
-> Stability: 1.1 - Active development
+> Stability: 2 - Stable.
 
 This flag configures file system write permissions using
 the [Permission Model][].
@@ -282,7 +288,7 @@ new WASI({
 ```
 
 ```console
-$ node --experimental-permission --allow-fs-read=* index.js
+$ node --permission --allow-fs-read=* index.js
 
 Error: Access to this API has been restricted
     at node:internal/main/run_main_module:30:49 {
@@ -313,7 +319,7 @@ new Worker(__filename);
 ```
 
 ```console
-$ node --experimental-permission --allow-fs-read=* index.js
+$ node --permission --allow-fs-read=* index.js
 
 Error: Access to this API has been restricted
     at node:internal/main/run_main_module:17:47 {
@@ -934,24 +940,6 @@ added:
 > Stability: 1 - Experimental
 
 Enable experimental support for the network inspection with Chrome DevTools.
-
-### `--experimental-permission`
-
-<!-- YAML
-added: v20.0.0
--->
-
-> Stability: 1.1 - Active development
-
-Enable the Permission Model for current process. When enabled, the
-following permissions are restricted:
-
-* File System - manageable through
-  [`--allow-fs-read`][], [`--allow-fs-write`][] flags
-* Child Process - manageable through [`--allow-child-process`][] flag
-* Worker Threads - manageable through [`--allow-worker`][] flag
-* WASI - manageable through [`--allow-wasi`][] flag
-* Addons - manageable through [`--allow-addons`][] flag
 
 ### `--experimental-print-required-tla`
 
@@ -1654,7 +1642,7 @@ See [Loading ECMAScript modules using `require()`][].
 <!-- YAML
 added: v22.5.0
 changes:
-  - version: REPLACEME
+  - version: v23.4.0
     pr-url: https://github.com/nodejs/node/pull/55890
     description: SQLite is unflagged but still experimental.
 -->
@@ -1782,6 +1770,28 @@ unless either the `--pending-deprecation` command-line flag, or the
 `NODE_PENDING_DEPRECATION=1` environment variable, is set. Pending deprecations
 are used to provide a kind of selective "early warning" mechanism that
 developers may leverage to detect deprecated API usage.
+
+### `--permission`
+
+<!-- YAML
+added: v20.0.0
+changes:
+  - version: REPLACEME
+    pr-url: https://github.com/nodejs/node/pull/56201
+    description: Permission Model is now stable.
+-->
+
+> Stability: 2 - Stable.
+
+Enable the Permission Model for current process. When enabled, the
+following permissions are restricted:
+
+* File System - manageable through
+  [`--allow-fs-read`][], [`--allow-fs-write`][] flags
+* Child Process - manageable through [`--allow-child-process`][] flag
+* Worker Threads - manageable through [`--allow-worker`][] flag
+* WASI - manageable through [`--allow-wasi`][] flag
+* Addons - manageable through [`--allow-addons`][] flag
 
 ### `--preserve-symlinks`
 
@@ -2260,6 +2270,9 @@ This option may be specified multiple times to exclude multiple glob patterns.
 If both `--test-coverage-exclude` and `--test-coverage-include` are provided,
 files must meet **both** criteria to be included in the coverage report.
 
+By default all the matching test files are excluded from the coverage report.
+Specifying this option will override the default behavior.
+
 ### `--test-coverage-functions=threshold`
 
 <!-- YAML
@@ -2425,7 +2438,7 @@ subtests inherit this value from their parent. The default value is `Infinity`.
 <!-- YAML
 added: v22.3.0
 changes:
-  - version: REPLACEME
+  - version: v23.4.0
     pr-url: https://github.com/nodejs/node/pull/55897
     description: Snapsnot testing is no longer experimental.
 -->
@@ -2543,7 +2556,7 @@ Print stack traces for deprecations.
 ### `--trace-env`
 
 <!-- YAML
-added: REPLACEME
+added: v23.4.0
 -->
 
 Print information about any access to environment variables done in the current Node.js
@@ -2566,7 +2579,7 @@ To print the stack trace of the access, use `--trace-env-js-stack` and/or
 ### `--trace-env-js-stack`
 
 <!-- YAML
-added: REPLACEME
+added: v23.4.0
 -->
 
 In addition to what `--trace-env` does, this prints the JavaScript stack trace of the access.
@@ -2574,7 +2587,7 @@ In addition to what `--trace-env` does, this prints the JavaScript stack trace o
 ### `--trace-env-native-stack`
 
 <!-- YAML
-added: REPLACEME
+added: v23.4.0
 -->
 
 In addition to what `--trace-env` does, this prints the native stack trace of the access.
@@ -2615,6 +2628,18 @@ added:
 
 Prints a stack trace whenever an environment is exited proactively,
 i.e. invoking `process.exit()`.
+
+### `--trace-require-module=mode`
+
+<!-- YAML
+added:
+ - REPLACEME
+-->
+
+Prints information about usage of [Loading ECMAScript modules using `require()`][].
+
+When `mode` is `all`, all usage is printed. When `mode` is `no-node-modules`, usage
+from the `node_modules` folder is excluded.
 
 ### `--trace-sigint`
 
@@ -3080,6 +3105,7 @@ one is included in the list below.
 * `--openssl-legacy-provider`
 * `--openssl-shared-config`
 * `--pending-deprecation`
+* `--permission`
 * `--preserve-symlinks-main`
 * `--preserve-symlinks`
 * `--prof-process`
@@ -3126,6 +3152,7 @@ one is included in the list below.
 * `--trace-event-file-pattern`
 * `--trace-events-enabled`
 * `--trace-exit`
+* `--trace-require-module`
 * `--trace-sigint`
 * `--trace-sync-io`
 * `--trace-tls`
