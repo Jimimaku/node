@@ -41,6 +41,19 @@
         'AdditionalOptions': ['/utf-8']
       }
     },
+    'conditions': [
+      ['OS=="mac"', {
+        # Hide symbols that are not explicitly exported with V8_EXPORT.
+        # TODO(joyeecheung): enable it on other platforms. Currently gcc times out
+        # or run out of memory with -fvisibility=hidden on some machines in the CI.
+        'xcode_settings': {
+          'GCC_SYMBOLS_PRIVATE_EXTERN': 'YES',  # -fvisibility=hidden
+        },
+        'defines': [
+          'BUILDING_V8_SHARED',  # Make V8_EXPORT visible.
+        ],
+      }],
+    ],
   },
   'targets': [
     {
@@ -2401,7 +2414,6 @@
         '<(ABSEIL_ROOT)/absl/strings/cord_buffer.cc',
         '<(ABSEIL_ROOT)/absl/strings/escaping.h',
         '<(ABSEIL_ROOT)/absl/strings/escaping.cc',
-        '<(ABSEIL_ROOT)/absl/strings/has_absl_stringify.h',
         '<(ABSEIL_ROOT)/absl/strings/has_ostream_operator.h',
         '<(ABSEIL_ROOT)/absl/strings/internal/charconv_bigint.h',
         '<(ABSEIL_ROOT)/absl/strings/internal/charconv_bigint.cc',
